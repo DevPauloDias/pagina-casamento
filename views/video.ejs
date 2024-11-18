@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gravação de Vídeo</title>
+
+  <link rel="stylesheet" href="styles/video.css">
+</head>
+<body>
+
+
+  <video id="preview" autoplay playsinline></video>
+  <button id="startRecording">Começar a Gravação</button>
+  <button id="stopRecording" disabled>Parar Gravação</button>
+  <video id="recordedVideo" controls style="display: none;"></video>
+  <button id="upload" disabled>Fazer Upload</button>
+
+  <script>
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    // Função para iniciar a câmera
+    async function startCamera() {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      document.getElementById('preview').srcObject = stream;
+      mediaRecorder = new MediaRecorder(stream);
+
+      // Evento para capturar dados do vídeo durante a gravação
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        const recordedVideo = document.getElementById('recordedVideo');
+        recordedVideo.src = URL.createObjectURL(recordedBlob);
+        recordedVideo.style.display = 'block';
+        document.getElementById('upload').disabled = false;
+      };
+    }
+
+    document.getElementById('startRecording').onclick = () => {
+      recordedChunks = [];
+      mediaRecorder.start();
+      document.getElementById('stopRecording').disabled = false;
+      document.getElementById('startRecording').disabled = true;
+    };
+
+    document.getElementById('stopRecording').onclick = () => {
+      mediaRecorder.stop();
+      document.getElementById('startRecording').disabled = false;
+      document.getElementById('stopRecording').disabled = true;
+    };
+
+    // Função para enviar o vídeo para o servidor
+    document.getElementById('upload').onclick = async () => {
+      const blob = new Blob(recordedChunks, { type: 'video/webm' });
+      const formData = new FormData();
+      formData.append('video', blob, 'mensagem_video.webm');
+
+      // Substitua pela URL do endpoint do backend que lida com o upload para o S3
+      await fetch('https://seu-backend.com/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      alert('Vídeo enviado com sucesso!');
+    };
+
+    startCamera();
+  </script>
+</body>
+</html>
