@@ -5,17 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gravação de Vídeo</title>
 
-  <link  href="/css/tailwind.css" rel="stylesheet" >
+  <link  href="/css/app.css" rel="stylesheet" >
 </head>
 <body>
 
 
-  <video id="preview" autoplay playsinline></video>
-  <button id="startRecording">Começar a Gravação</button>
-  <button id="stopRecording" disabled>Parar Gravação</button>
-  <video id="recordedVideo" controls style="display: none;"></video>
-  <button id="upload" disabled>Fazer Upload</button>
-<p>  url aqui <%- url %></p>
+ <div class="container flex flex-col p-4">
+  
+   <div id="frameRecord">
+      <video id="preview" autoplay playsinline class="rounded-sm"></video>
+      <button id="startRecording" type="button" class="bg-green-500 rounded-sm m-2 text-white">Começar a Gravação</button>
+      <button id="stopRecording" disabled>Parar Gravação</button>
+   </div>
+
+   <div id="previewRecord" style="display: none;">
+      <video id="recordedVideo" controls style="display: block;"></video>
+
+     <div class="flex flex-row gap-4 mt-2">
+        <button id="upload" class="bg-green-300 p-1 rounded-sm" disabled>Fazer Upload</button>
+        <button id="back" class="bg-blue-300 p-1 rounded-sm" onclick="recordAgain()" > Gravar novamente</button>
+     </div>
+   </div>
+ </div>
+
   <script>
     let mediaRecorder;
     let recordedChunks = [];
@@ -37,8 +49,9 @@
         const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
         const recordedVideo = document.getElementById('recordedVideo');
         recordedVideo.src = URL.createObjectURL(recordedBlob);
-        recordedVideo.style.display = 'block';
+        document.getElementById('previewRecord').style.display = 'block';
         document.getElementById('upload').disabled = false;
+        document.getElementById('frameRecord').style.display = 'none';
       };
     }
 
@@ -54,6 +67,12 @@
       document.getElementById('startRecording').disabled = false;
       document.getElementById('stopRecording').disabled = true;
     };
+    function recordAgain(){
+      document.getElementById('frameRecord').style.display = 'block';
+      document.getElementById('previewRecord').style.display = 'none';
+
+
+    }
 
 
     // Função para enviar o vídeo para o servidor
