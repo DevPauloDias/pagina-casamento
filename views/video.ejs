@@ -33,9 +33,12 @@
     let recordedChunks = [];
 
     // Função para iniciar a câmera
+   
     async function startCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      document.getElementById('preview').srcObject = stream;
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+      const streamVideoOnly = await navigator.mediaDevices.getUserMedia({ video: true });
+      document.getElementById('preview').srcObject = streamVideoOnly;
       mediaRecorder = new MediaRecorder(stream);
 
       // Evento para capturar dados do vídeo durante a gravação
@@ -45,27 +48,32 @@
         }
       };
 
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async() => {
         const recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
         const recordedVideo = document.getElementById('recordedVideo');
         recordedVideo.src = URL.createObjectURL(recordedBlob);
         document.getElementById('previewRecord').style.display = 'block';
         document.getElementById('upload').disabled = false;
         document.getElementById('frameRecord').style.display = 'none';
-      };
+      
+      };    
     }
+     
+  
 
-    document.getElementById('startRecording').onclick = () => {
+    document.getElementById('startRecording').onclick = async() => {
+
       recordedChunks = [];
       mediaRecorder.start();
       document.getElementById('stopRecording').disabled = false;
       document.getElementById('startRecording').disabled = true;
     };
 
-    document.getElementById('stopRecording').onclick = () => {
+    document.getElementById('stopRecording').onclick = async() => {
       mediaRecorder.stop();
       document.getElementById('startRecording').disabled = false;
       document.getElementById('stopRecording').disabled = true;
+
     };
     function recordAgain(){
       document.getElementById('frameRecord').style.display = 'block';
