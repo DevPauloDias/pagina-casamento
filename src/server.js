@@ -4,7 +4,7 @@ require('dotenv').config()
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
-
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 
@@ -13,6 +13,7 @@ const serverUrl = process.env.SERVER_URL || "http://localhost:3000"
 app.set('view engine', 'ejs' )
 
 app.use(express.static('public'));
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -29,7 +30,7 @@ const bucketName = process.env.S3_BUCKET_NAME;
 app.get('/', (req, res)=>{
 
    // res.render('video', {url: serverUrl})
-   res.render('index')
+   res.render('recado')
 })
 
 
