@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gravação de Vídeo</title>
 
-  <link  href="/css/app.css" rel="stylesheet" >
+    <script src="https://cdn.tailwindcss.com"></script>
+   
 </head>
 <body>
 
@@ -14,21 +15,30 @@
   
    <div id="frameRecord">
       <video id="preview" autoplay playsinline class="rounded-sm"></video>
-      <button id="startRecording" type="button" class="bg-green-500 rounded-sm m-2 text-white">Começar a Gravação</button>
-      <button id="stopRecording" disabled>Parar Gravação</button>
+      <div class="flex justify-center">
+        <button id="startRecording" type="button" class="bg-green-500 rounded-md m-2 text-white p-1" onclick="recording()"> Gravar</button>
+        <button id="recording" class="bg-gray-300 p-1 m-2 rounded-md hidden"> Gravando... </button>
+      
+        <button id="stopRecording" disabled class="p-1 bg-blue-300 text-gray-800 m-2 rounded-md" onclick="recordStoped()">Parar Gravação</button>
+
+        
+      </div>
    </div>
 
    <div id="previewRecord" style="display: none;">
       <video id="recordedVideo" controls style="display: block;"></video>
 
-     <div class="flex flex-row gap-4 mt-2">
-        <button id="upload" class="bg-green-300 p-1 rounded-sm" disabled>Fazer Upload</button>
-        <button id="back" class="bg-blue-300 p-1 rounded-sm" onclick="recordAgain()" > Gravar novamente</button>
-     </div>
+   
+      <div class="flex justify-center">
+        <button id="upload" class="bg-green-500 text-white p-1 rounded-md  m-2" disabled>Enviar</button>
+        <button id="back" class="bg-blue-300 p-1 rounded-md m-2 text-gray-800" onclick="recordAgain()" > Gravar novamente</button>
+      </div>
+     
    </div>
  </div>
 
   <script>
+   
     let mediaRecorder;
     let recordedChunks = [];
 
@@ -58,10 +68,13 @@
       
       };    
     }
+
      
   
 
     document.getElementById('startRecording').onclick = async() => {
+     document.getElementById('recording').style.display = 'block';
+      document.getElementById('startRecording').style.display = 'none';
 
       recordedChunks = [];
       mediaRecorder.start();
@@ -70,6 +83,9 @@
     };
 
     document.getElementById('stopRecording').onclick = async() => {
+      document.getElementById('recording').style.display = 'none';
+     document.getElementById('startRecording').style.display = 'block';
+
       mediaRecorder.stop();
       document.getElementById('startRecording').disabled = false;
       document.getElementById('stopRecording').disabled = true;
@@ -92,6 +108,8 @@
       formData.append('video', blob, randomName + '_mensagem_video.webm');
 
     const baseUrl = "<%= url %>"
+
+    console.log("url no front---", baseUrl)
       // Substitua pela URL do endpoint do backend que lida com o upload para o S3
      const uploadReponse = await fetch( baseUrl + '/upload', {
         method: 'POST',
@@ -106,8 +124,10 @@
         alert('Falha ao enviar vídeo!');
       }
     };
+   
 
     startCamera();
+   
   </script>
 </body>
 </html>

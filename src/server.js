@@ -30,7 +30,7 @@ const bucketName = process.env.S3_BUCKET_NAME;
 app.get('/', (req, res)=>{
 
   // res.render('video', {url: serverUrl})
-   res.render('recado')
+   res.render('recado', {url: serverUrl})
 })
 
 
