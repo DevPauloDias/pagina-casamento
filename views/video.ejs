@@ -100,7 +100,6 @@
     }
 
 
-    // Função para enviar o vídeo para o servidor
     document.getElementById('upload').onclick = async () => {
 
       const randomName = new Date().getTime()
@@ -111,7 +110,7 @@
     const baseUrl = "<%= url %>"
 
     console.log("url no front---", baseUrl)
-      // Substitua pela URL do endpoint do backend que lida com o upload para o S3
+
      const uploadReponse = await fetch( baseUrl + '/upload', {
         method: 'POST',
         body: formData

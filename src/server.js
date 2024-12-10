@@ -20,7 +20,6 @@ app.use(bodyParser.json());
 
 
 
-// Configurações do S3
 const upload = multer({ storage: multer.memoryStorage() });
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
@@ -42,15 +41,14 @@ app.post('/upload',upload.single('video') , async(req, res)=>{
             return res.status(400).send('Nenhum arquivo enviado.');
         }
 
-        // Configurações do objeto no S3
+       
         const params = {
             Bucket: bucketName,
             Key: `videos/${Date.now()}-${req.file.originalname}`, // Caminho e nome do arquivo no S3
-            Body: req.file.buffer, // Dados do arquivo
-            ContentType: req.file.mimetype, // Tipo de conteúdo do arquivo
+            Body: req.file.buffer, 
+            ContentType: req.file.mimetype, 
         };
 
-        // Enviar o vídeo para o S3
         const command = new PutObjectCommand(params);
         await s3.send(command);
 
