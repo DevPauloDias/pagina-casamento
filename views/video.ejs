@@ -102,6 +102,11 @@
 
     document.getElementById('upload').onclick = async () => {
 
+      const uploadButton = document.getElementById('upload');    
+
+      uploadButton.innerHTML = 'Enviando...';
+      uploadButton.disabled = true;
+
       const randomName = new Date().getTime()
       const blob = new Blob(recordedChunks, { type: 'video/webm' });
       const formData = new FormData();
@@ -109,17 +114,21 @@
 
     const baseUrl = "<%= url %>"
 
-    console.log("url no front---", baseUrl)
+
 
      const uploadReponse = await fetch( baseUrl + '/upload', {
         method: 'POST',
         body: formData
 
-      });
+      }); 
       if(uploadReponse.status === 200){
+        uploadButton.innerHTML = 'Enviar';
+        uploadButton.disabled = false;
+
         alert('Vídeo enviado com sucesso!');
       }else{
-        
+         uploadButton.innerHTML = 'Enviar';
+         uploadButton.disabled = false;
         console.log(" status da requisição -",uploadReponse.status )
         alert('Falha ao enviar vídeo!');
       }
