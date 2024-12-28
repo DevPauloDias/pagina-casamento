@@ -44,7 +44,7 @@ app.post('/upload',upload.single('video') , async(req, res)=>{
        
         const params = {
             Bucket: bucketName,
-            Key: `videos/${Date.now()}-${req.file.originalname}`, // Caminho e nome do arquivo no S3
+            Key: `${process.env.S3_PATH_VIDEOS}/${Date.now()}-${req.file.originalname}`, // Caminho e nome do arquivo no S3
             Body: req.file.buffer, 
             ContentType: req.file.mimetype, 
         };
